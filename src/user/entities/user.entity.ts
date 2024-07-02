@@ -30,15 +30,15 @@ export class User {
   @Column()
   email: string;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
   @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
   profile: Profile;
 
   @Column({ type: 'enum', enum: Role, default: Role.User })
   role: Role;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

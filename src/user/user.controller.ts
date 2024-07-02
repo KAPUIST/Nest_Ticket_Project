@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Patch,
   UseGuards,
   Request,
@@ -12,7 +11,7 @@ import { UserService } from './user.service';
 
 import { UpdatePhoneNumberDto } from './dto/update-phone-number.dto';
 
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('api/users')
 export class UserController {
@@ -26,20 +25,19 @@ export class UserController {
   }
   //유저 정보 수정
   @UseGuards(JwtAuthGuard)
-  @Patch(':username')
+  @Patch('me/phone')
   async updatePhoneNumber(
-    @Param('username') username: string,
+    @Request() req,
     @Body() updatePhoneNumberDto: UpdatePhoneNumberDto,
   ) {
+    const username = req.username;
     return this.userService.updatePhoneNumber(username, updatePhoneNumberDto);
   }
   //유저 정보 삭제
   @UseGuards(JwtAuthGuard)
-  @Delete(':username')
-  async remove(
-    @Param('username') username: string,
-    @Body('password') password: string,
-  ) {
+  @Delete('me')
+  async remove(@Request() req, @Body('password') password: string) {
+    const username = req.username;
     return this.userService.removeUser(username, password);
   }
 }

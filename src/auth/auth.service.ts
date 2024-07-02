@@ -29,6 +29,7 @@ export class AuthService {
   }
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.findOne(username);
+    console.log(user, '이게유저입니다잉?');
     if (_.isNil(user)) {
       throw new NotFoundException(
         `유저네임이 ${username}인 유저를 찾을수없습니다.`,

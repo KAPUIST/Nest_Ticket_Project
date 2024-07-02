@@ -98,7 +98,7 @@ export class UserService {
         `유저네임이 ${username}인 유저를 찾을수없습니다.`,
       );
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
