@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,8 +18,7 @@ export class UserService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const { username, email, password, firstName, lastName, phoneNumber } =
-      createUserDto;
+    const { username, email, password, firstName, lastName, phoneNumber } = createUserDto;
 
     const existingUserByUsername = await this.userRepository.findOne({
       where: { username },
@@ -51,6 +45,7 @@ export class UserService {
       email,
       password: hashedPassword,
       profile,
+      points: 1000000,
     });
 
     return await this.userRepository.save(user);
@@ -62,24 +57,17 @@ export class UserService {
       relations: ['profile'],
     });
     if (_.isNil(user)) {
-      throw new NotFoundException(
-        `유저네임이 ${username}인 유저를 찾을수없습니다.`,
-      );
+      throw new NotFoundException(`유저네임이 ${username}인 유저를 찾을수없습니다.`);
     }
     return user;
   }
 
-  async updatePhoneNumber(
-    username: string,
-    updatePhoneNumberDto: UpdatePhoneNumberDto,
-  ): Promise<User> {
+  async updatePhoneNumber(username: string, updatePhoneNumberDto: UpdatePhoneNumberDto): Promise<User> {
     const { password, phoneNumber } = updatePhoneNumberDto;
 
     const user = await this.findOne(username);
     if (_.isNil(user)) {
-      throw new NotFoundException(
-        `유저네임이 ${username}인 유저를 찾을수없습니다.`,
-      );
+      throw new NotFoundException(`유저네임이 ${username}인 유저를 찾을수없습니다.`);
     }
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
@@ -94,14 +82,12 @@ export class UserService {
   async removeUser(username: string, password: string): Promise<void> {
     const user = await this.findOne(username);
     if (_.isNil(user)) {
-      throw new NotFoundException(
-        `유저네임이 ${username}인 유저를 찾을수없습니다.`,
-      );
+      throw new NotFoundException(`유저네임이 ${username}인 유저를 찾을수없습니다.`);
     }
     const isPasswordMatch = bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
-    await this.userRepository.remove(user);
+    await this.userRepository.softDelete(user.id);
   }
 }

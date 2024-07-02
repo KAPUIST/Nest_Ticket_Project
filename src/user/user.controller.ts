@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Patch, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 
 import { UpdatePhoneNumberDto } from './dto/update-phone-number.dto';
@@ -26,10 +18,7 @@ export class UserController {
   //유저 정보 수정
   @UseGuards(JwtAuthGuard)
   @Patch('me/phone')
-  async updatePhoneNumber(
-    @Request() req,
-    @Body() updatePhoneNumberDto: UpdatePhoneNumberDto,
-  ) {
+  async updatePhoneNumber(@Request() req, @Body() updatePhoneNumberDto: UpdatePhoneNumberDto) {
     const username = req.username;
     return this.userService.updatePhoneNumber(username, updatePhoneNumberDto);
   }

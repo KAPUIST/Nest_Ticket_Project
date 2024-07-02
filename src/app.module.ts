@@ -7,11 +7,13 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { Profile } from './user/entities/profile.entity';
+import { PerformanceModule } from './performance/performance.module';
+import { BookingModule } from './booking/booking.module';
+import { SeatModule } from './seat/seat.module';
+import { PaymentModule } from './payment/payment.module';
 
 const typeOrmModuleOptions = {
-  useFactory: async (
-    configService: ConfigService,
-  ): Promise<TypeOrmModuleOptions> => ({
+  useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
     namingStrategy: new SnakeNamingStrategy(),
     type: 'mysql',
     username: configService.get('DB_USERNAME'),
@@ -21,7 +23,7 @@ const typeOrmModuleOptions = {
     database: configService.get('DB_NAME'),
     synchronize: configService.get('DB_SYNC'),
     logging: true,
-    entities: [User, Profile],
+    entities: [__dirname + '/**/*.entity{.ts,.js}'],
   }),
   inject: [ConfigService],
 };
@@ -46,6 +48,10 @@ const typeOrmModuleOptions = {
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AuthModule,
     UserModule,
+    PerformanceModule,
+    BookingModule,
+    SeatModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [],

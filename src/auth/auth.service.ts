@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -29,13 +25,11 @@ export class AuthService {
   }
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userService.findOne(username);
-    console.log(user, '이게유저입니다잉?');
+
     if (_.isNil(user)) {
-      throw new NotFoundException(
-        `유저네임이 ${username}인 유저를 찾을수없습니다.`,
-      );
+      throw new NotFoundException(`유저네임이 ${username}인 유저를 찾을수없습니다.`);
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }

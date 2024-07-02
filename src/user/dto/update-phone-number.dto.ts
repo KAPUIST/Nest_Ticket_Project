@@ -1,9 +1,4 @@
-import {
-  IsNotEmpty,
-  IsPhoneNumber,
-  IsString,
-  MinLength,
-} from 'class-validator';
+import { IsNotEmpty, IsPhoneNumber, IsString, MinLength } from 'class-validator';
 
 export class UpdatePhoneNumberDto {
   @IsNotEmpty()
