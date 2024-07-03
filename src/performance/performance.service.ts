@@ -20,7 +20,7 @@ export class PerformanceService {
   ) {}
 
   async createPerformance(createPerformanceDto: CreatePerformanceDto): Promise<Performance> {
-    const { title, description, category, location, image, dates, seats } = createPerformanceDto;
+    const { title, description, category, location, image, dates } = createPerformanceDto;
 
     // 공연 생성
     const performance = this.performanceRepository.create({
@@ -32,15 +32,29 @@ export class PerformanceService {
     });
     await this.performanceRepository.save(performance);
 
-    const performanceDates = dates.map((date) => this.performanceDateRepository.create({ date, performance }));
-    await this.performanceDateRepository.save(performanceDates);
+    // 공연 날짜 및 좌석 생성
+    for (const dateDto of dates) {
+      const performanceDate = this.performanceDateRepository.create({
+        date: dateDto.date,
+        time: dateDto.time,
+        cancelableDate: dateDto.cancelableDate,
+        performance,
+      });
+      await this.performanceDateRepository.save(performanceDate);
 
-    const seatEntities = seats.map((seatData) => this.seatRepository.create({ ...seatData, performance }));
-    await this.seatRepository.save(seatEntities);
+      for (const seatDto of dateDto.seats) {
+        const seat = this.seatRepository.create({
+          ...seatDto,
+          performance,
+          performanceDate,
+        });
+        await this.seatRepository.save(seat);
+      }
+    }
 
     return this.performanceRepository.findOne({
       where: { id: performance.id },
-      relations: ['dates', 'seats'],
+      relations: ['dates', 'dates.seats'],
     });
   }
 
@@ -49,7 +63,10 @@ export class PerformanceService {
   }
 
   async findOne(id: number): Promise<Performance> {
-    const performance = await this.performanceRepository.findOne({ where: { id }, relations: ['seats', 'bookings'] });
+    const performance = await this.performanceRepository.findOne({
+      where: { id },
+      relations: ['dates'],
+    });
     if (_.isNil(performance)) {
       throw new NotFoundException('공연을 찾을수 없습니다.');
     }

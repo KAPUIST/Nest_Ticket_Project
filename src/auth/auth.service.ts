@@ -59,7 +59,7 @@ export class AuthService {
         secret: this.configService.get<string>('REFRESH_SECRET_KEY'),
       });
       const payload = { username, sub };
-      console.log(payload);
+
       return {
         access_token: this.jwtService.sign(payload, {
           secret: this.configService.get<string>('ACCESS_SECRET_KEY'),

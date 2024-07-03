@@ -2,6 +2,7 @@ import { IsNotEmpty, IsString, IsDate, IsArray, IsNumber, IsEnum, ValidateNested
 import { PerformanceCategory } from '../types/performance-category.enum';
 import { Type } from 'class-transformer';
 import { CreateSeatDto } from 'src/seat/dto/create-seat.dto';
+import { CreatePerformanceDateDto } from './create-performance-date.dto';
 
 export class CreatePerformanceDto {
   @IsNotEmpty()
@@ -25,13 +26,7 @@ export class CreatePerformanceDto {
   image: string;
 
   @IsArray()
-  @IsNotEmpty({ each: true })
-  @Type(() => Date)
-  @IsDate({ each: true })
-  dates: Date[];
-
-  @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateSeatDto)
-  seats: CreateSeatDto[];
+  @Type(() => CreatePerformanceDateDto)
+  dates: CreatePerformanceDateDto[];
 }

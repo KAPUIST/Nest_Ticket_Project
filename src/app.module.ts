@@ -21,7 +21,7 @@ const typeOrmModuleOptions = {
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
     synchronize: configService.get('DB_SYNC'),
-    logging: true,
+    logging: false,
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
   }),
   inject: [ConfigService],

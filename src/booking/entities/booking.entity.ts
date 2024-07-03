@@ -4,6 +4,7 @@ import { Performance } from '../../performance/entities/performance.entity';
 import { Seat } from '../../seat/entities/seat.entity';
 import { Payment } from 'src/payment/entities/payment.entity';
 import { BookingStatus } from '../types/booking-status.enum';
+import { PerformanceDate } from 'src/performance/entities/performance-date.entity';
 
 @Entity('bookings')
 export class Booking {
@@ -25,6 +26,9 @@ export class Booking {
 
   @ManyToOne(() => Performance, (performance) => performance.bookings)
   performance: Performance;
+
+  @ManyToOne(() => PerformanceDate, (performanceDate) => performanceDate.bookings)
+  performanceDate: PerformanceDate;
 
   @ManyToOne(() => Seat, (seat) => seat.bookings, { nullable: true })
   seat: Seat;
