@@ -7,6 +7,7 @@ import { Seat } from 'src/seat/entities/seat.entity';
 import { PerformanceDate } from './entities/performance-date.entity';
 import { Performance } from './entities/performance.entity';
 import { PerformanceCategory } from './types/performance-category.enum';
+import { AvailableSeatDto } from 'src/seat/dto/avaliable-seat.dto';
 
 @Injectable()
 export class PerformanceService {
@@ -86,13 +87,29 @@ export class PerformanceService {
       .orWhere('performance.description LIKE :term', { term: `%${term}%` })
       .getMany();
   }
-  async findAvailableSeats(performanceId: number): Promise<Seat[]> {
-    const seats = await this.seatRepository.find({
-      where: { performance: { id: performanceId }, isBooked: false },
+  async findAvailableSeats(performanceId: number): Promise<AvailableSeatDto[]> {
+    const performance = await this.performanceRepository.findOne({
+      where: { id: performanceId },
+      relations: ['dates', 'dates.seats'],
     });
-    if (!seats.length) {
-      throw new NotFoundException('예매 가능한 좌석을 찾을 수 없습니다.');
+    if (!performance) {
+      throw new NotFoundException('공연을 찾을 수 없습니다.');
     }
-    return seats;
+
+    const availableSeats: AvailableSeatDto[] = [];
+
+    for (const date of performance.dates) {
+      const availableSeatsForDate = date.seats.filter((seat) => !seat.isBooked);
+      if (availableSeatsForDate.length > 0) {
+        availableSeats.push({
+          date: date.date,
+          time: date.time,
+          cancelableDate: date.cancelableDate,
+          seats: availableSeatsForDate,
+        });
+      }
+    }
+
+    return availableSeats;
   }
 }

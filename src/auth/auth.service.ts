@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { User } from 'src/user/entities/user.entity';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -38,8 +39,18 @@ export class AuthService {
     }
     return user;
   }
-
-  async login(user: any) {
+  async validate(username: string, password: string): Promise<any> {
+    const user = await this.validateUser(username, password);
+    if (_.isNil(user)) {
+      throw new UnauthorizedException('인증정보가 올바르지 않습니다.');
+    }
+    return user; // 이 사용자가 `req.user`에 저장됩니다.
+  }
+  async login(loginUserDto: LoginDto) {
+    const user = await this.validateUser(loginUserDto.username, loginUserDto.password);
+    if (_.isNil(user)) {
+      throw new UnauthorizedException('인증정보가 올바르지 않습니다.');
+    }
     const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload, {
