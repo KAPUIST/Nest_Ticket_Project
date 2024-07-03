@@ -1,5 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Role } from 'src/user/types/userRole.type';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
@@ -9,7 +10,7 @@ export class AdminGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (user && user.role === 'admin') {
+    if (user && user.role === Role.Admin) {
       return true;
     } else {
       throw new ForbiddenException('권한이 존재하지 않습니다.');
