@@ -1,4 +1,4 @@
-import { Controller, Param, Post, Request, UseGuards, Body, ParseIntPipe } from '@nestjs/common';
+import { Controller, Param, Post, Request, UseGuards, Body, ParseIntPipe, Delete, Req } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { BookSeatDto } from './dto/book-seat.dto';
@@ -14,7 +14,16 @@ export class BookingController {
     @Param('performanceId', ParseIntPipe) performanceId: number,
     @Body() bookSeatDto: BookSeatDto,
   ) {
-    const userId = req.userId;
+    const userId = req.user.id;
+
     return this.bookingService.bookSeat(userId, performanceId, { ...bookSeatDto });
+  }
+  @UseGuards(JwtAuthGuard)
+  @Delete(':performanceId/bookings/:id')
+  async cancelBooking(@Param('id', ParseIntPipe) id: number, @Req() req) {
+    const userId = req.user.id;
+    console.log(id, userId);
+    await this.bookingService.cancelBooking(id, userId);
+    return { message: '예매가 취소 되었습니다.' };
   }
 }

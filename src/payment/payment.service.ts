@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { Booking } from 'src/booking/entities/booking.entity';
 import _ from 'lodash';
+import { PaymentStatus } from './types/payment-status.enum';
 
 @Injectable()
 export class PaymentService {
@@ -27,6 +28,7 @@ export class PaymentService {
       user,
       booking,
       amount,
+      status: PaymentStatus.COMPLETED,
     });
 
     return tx.save(payment);

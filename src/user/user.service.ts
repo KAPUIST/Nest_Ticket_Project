@@ -32,7 +32,6 @@ export class UserService {
     if (existingUserByEmail) {
       throw new BadRequestException('이미 사용중인 이메일입니다.');
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     const profile = this.profileRepository.create({
       firstName,
@@ -43,7 +42,7 @@ export class UserService {
     const user = this.userRepository.create({
       username,
       email,
-      password: hashedPassword,
+      password,
       profile,
       points: 1000000,
     });

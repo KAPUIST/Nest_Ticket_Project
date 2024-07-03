@@ -1,9 +1,10 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { LoginDto } from './dto/login.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('api/auth')
 export class AuthController {
@@ -16,12 +17,16 @@ export class AuthController {
   }
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(@Req() req) {
+    return this.authService.login(req.user);
   }
 
   @Post('refresh')
-  async refresh(@Body('refresh_token') refreshToken: string) {
+  async refresh(@Req() req) {
+    const refreshToken = req.headers.authorization?.split(' ')[1];
+    if (!refreshToken) {
+      throw new BadRequestException('리프레쉬 토큰이 없습니다.');
+    }
     return this.authService.refreshToken(refreshToken);
   }
 }

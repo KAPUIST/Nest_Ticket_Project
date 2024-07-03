@@ -3,6 +3,7 @@ import { User } from '../../user/entities/user.entity';
 import { Performance } from '../../performance/entities/performance.entity';
 import { Seat } from '../../seat/entities/seat.entity';
 import { Payment } from 'src/payment/entities/payment.entity';
+import { BookingStatus } from '../types/booking-status.enum';
 
 @Entity('bookings')
 export class Booking {
@@ -14,6 +15,13 @@ export class Booking {
 
   @ManyToOne(() => User, (user) => user.bookings)
   user: User;
+
+  @Column({
+    type: 'enum',
+    enum: BookingStatus,
+    default: BookingStatus.CONFIRMED,
+  })
+  status: BookingStatus;
 
   @ManyToOne(() => Performance, (performance) => performance.bookings)
   performance: Performance;

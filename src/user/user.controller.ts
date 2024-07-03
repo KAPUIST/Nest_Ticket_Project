@@ -13,20 +13,21 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getProfile(@Request() req) {
-    return this.userService.findOne(req.username);
+    const username = req.user.username;
+    return this.userService.findOne(username);
   }
   //유저 정보 수정
   @UseGuards(JwtAuthGuard)
   @Patch('me/phone')
   async updatePhoneNumber(@Request() req, @Body() updatePhoneNumberDto: UpdatePhoneNumberDto) {
-    const username = req.username;
+    const username = req.user.username;
     return this.userService.updatePhoneNumber(username, updatePhoneNumberDto);
   }
   //유저 정보 삭제
   @UseGuards(JwtAuthGuard)
   @Delete('me')
   async remove(@Request() req, @Body('password') password: string) {
-    const username = req.username;
+    const username = req.user.username;
     return this.userService.removeUser(username, password);
   }
 }

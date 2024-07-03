@@ -5,12 +5,11 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import Joi from 'joi';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { User } from './user/entities/user.entity';
-import { Profile } from './user/entities/profile.entity';
 import { PerformanceModule } from './performance/performance.module';
 import { BookingModule } from './booking/booking.module';
 import { SeatModule } from './seat/seat.module';
 import { PaymentModule } from './payment/payment.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 const typeOrmModuleOptions = {
   useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
@@ -44,6 +43,11 @@ const typeOrmModuleOptions = {
         DB_NAME: Joi.string().required(),
         DB_SYNC: Joi.boolean().required(),
       }),
+    }),
+    CacheModule.register({
+      ttl: 60000, // 데이터 캐싱 시간(밀리 초 단위, 1000 = 1초)
+      max: 100, // 최대 캐싱 개수
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync(typeOrmModuleOptions),
     AuthModule,

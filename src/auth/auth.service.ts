@@ -21,6 +21,7 @@ export class AuthService {
       ...createUserDto,
       password: hashedPassword,
     });
+
     return user;
   }
   async validateUser(username: string, password: string): Promise<any> {
@@ -29,7 +30,9 @@ export class AuthService {
     if (_.isNil(user)) {
       throw new NotFoundException(`유저네임이 ${username}인 유저를 찾을수없습니다.`);
     }
-    const isPasswordMatch = bcrypt.compare(password, user.password);
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
     if (!isPasswordMatch) {
       throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
@@ -56,6 +59,7 @@ export class AuthService {
         secret: this.configService.get<string>('REFRESH_SECRET_KEY'),
       });
       const payload = { username, sub };
+      console.log(payload);
       return {
         access_token: this.jwtService.sign(payload, {
           secret: this.configService.get<string>('ACCESS_SECRET_KEY'),

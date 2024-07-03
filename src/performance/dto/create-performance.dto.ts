@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsString, IsDate, IsArray, IsNumber, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsDate, IsArray, IsNumber, IsEnum, ValidateNested } from 'class-validator';
 import { PerformanceCategory } from '../types/performance-category.enum';
 import { Type } from 'class-transformer';
+import { CreateSeatDto } from 'src/seat/dto/create-seat.dto';
 
 export class CreatePerformanceDto {
   @IsNotEmpty()
@@ -30,6 +31,7 @@ export class CreatePerformanceDto {
   dates: Date[];
 
   @IsArray()
-  @IsNotEmpty({ each: true })
-  seats: { row: number; column: number; seatNumber: string; price: number }[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateSeatDto)
+  seats: CreateSeatDto[];
 }

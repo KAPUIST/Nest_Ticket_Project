@@ -8,6 +8,9 @@ import { BookSeatDto } from './dto/book-seat.dto';
 import _ from 'lodash';
 import { Performance } from 'src/performance/entities/performance.entity';
 import { PaymentService } from 'src/payment/payment.service';
+import { Payment } from 'src/payment/entities/payment.entity';
+import { BookingStatus } from './types/booking-status.enum';
+import { PaymentStatus } from 'src/payment/types/payment-status.enum';
 
 @Injectable()
 export class BookingService {
@@ -22,6 +25,7 @@ export class BookingService {
     const { seatId } = bookSeatDto;
     return await this.dataSource.transaction(async (tx) => {
       const user = await tx.findOne(User, { where: { id: userId } });
+      console.log(user);
       if (!user) {
         throw new NotFoundException('유저를 찾을 수 없습니다.');
       }
@@ -58,12 +62,46 @@ export class BookingService {
         performance,
         seat,
         bookingDate: new Date(),
+        status: BookingStatus.CONFIRMED,
       });
 
       await tx.save(booking);
       await this.paymentService.createPayment(user.id, booking.id, seat.price, tx);
 
       return booking;
+    });
+  }
+
+  async cancelBooking(bookingId: number, userId: number): Promise<void> {
+    return await this.dataSource.transaction(async (tx) => {
+      const booking = await tx.findOne(Booking, { where: { id: bookingId }, relations: ['user', 'seat'] });
+      if (_.isNil(booking)) {
+        throw new NotFoundException('예매 내역을 조회할 수 없습니다.');
+      }
+      if (booking.user.id !== userId) {
+        throw new ConflictException('본인의 예매건만 취소할 수 있습니다.');
+      }
+
+      if (booking.status === BookingStatus.REFUNDED) {
+        throw new ConflictException('이미 환불된 예매입니다.');
+      }
+
+      const payment = await tx.findOne(Payment, { where: { booking: { id: bookingId } } });
+      if (_.isNil(payment)) {
+        throw new NotFoundException('결재 기록을 찾을 수 없습니다.');
+      }
+      payment.status = PaymentStatus.REFUNDED;
+      await tx.save(payment);
+      const user = await tx.findOne(User, { where: { id: userId } });
+      user.points += payment.amount;
+      await tx.save(user);
+
+      const seat = booking.seat;
+      seat.isBooked = false;
+      await tx.save(seat);
+      booking.status = BookingStatus.REFUNDED;
+
+      await tx.save(booking);
     });
   }
 }
