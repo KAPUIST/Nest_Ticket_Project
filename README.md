@@ -62,4 +62,4 @@ yarn start:dev
 
 ### 6.API 문서
 
-Swagger를 사용한 API 문서는 http://localhost:3000/api-docs에서 확인할 수 있습니다. 여기에는 모든 엔드포인트와 요청 및 응답 형식에 대한 자세한 정보가 포함되어 있습니다.
+Swagger를 사용한 API 문서는 http://localhost:3000/api-docs 에서 확인할 수 있습니다. 여기에는 모든 엔드포인트와 요청 및 응답 형식에 대한 자세한 정보가 포함되어 있습니다.
