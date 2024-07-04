@@ -2,9 +2,11 @@
 
 이 프로젝트는 NestJS와 TypeORM을 사용하여 개발된 공연 예약 시스템입니다. 이 시스템은 사용자 관리, 공연 관리, 좌석 예매, 예매 취소, 공연 검색 등의 기능을 제공합니다.
 
+
 - [배포주소](http://43.201.51.91:3000/api/performances)
 - [API SWAGGER](http://43.201.51.91:3000/api-docs)
-
+## ERD
+<img width="380" alt="스크린샷 2024-07-03 오후 9 04 14" src="https://github.com/KAPUIST/Nest_Ticket_Project/assets/91464689/f0aa04e0-b8d6-4944-9f81-060b4b523b84">
 ## 주요 기능
 
 - 사용자 회원가입 및 로그인 (JWT 인증)
