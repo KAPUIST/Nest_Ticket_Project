@@ -7,10 +7,11 @@ import { PaymentService } from 'src/payment/payment.service';
 import { User } from 'src/user/entities/user.entity';
 import { Seat } from 'src/seat/entities/seat.entity';
 import { Payment } from 'src/payment/entities/payment.entity';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Booking, User, Seat, Performance, Payment])],
-  providers: [BookingService, PaymentService],
+  imports: [TypeOrmModule.forFeature([Booking, User, Seat, Performance, Payment]), PaymentModule],
+  providers: [BookingService],
   controllers: [BookingController],
 })
 export class BookingModule {}

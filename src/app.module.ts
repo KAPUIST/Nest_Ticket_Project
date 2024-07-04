@@ -10,6 +10,8 @@ import { BookingModule } from './booking/booking.module';
 import { SeatModule } from './seat/seat.module';
 import { PaymentModule } from './payment/payment.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 const typeOrmModuleOptions = {
   useFactory: async (configService: ConfigService): Promise<TypeOrmModuleOptions> => ({
@@ -57,7 +59,7 @@ const typeOrmModuleOptions = {
     SeatModule,
     PaymentModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
