@@ -2,8 +2,8 @@
 
 이 프로젝트는 NestJS와 TypeORM을 사용하여 개발된 공연 예약 시스템입니다. 이 시스템은 사용자 관리, 공연 관리, 좌석 예매, 예매 취소, 공연 검색 등의 기능을 제공합니다.
 
-- [배포주소]()
-- [API SWAGGER]()
+- [배포주소](http://43.201.51.91:3000/api/performances)
+- [API SWAGGER](http://43.201.51.91:3000/api-docs)
 
 ## 주요 기능
 
@@ -62,4 +62,4 @@ yarn start:dev
 
 ### 6.API 문서
 
-Swagger를 사용한 API 문서는 http://localhost:3000/api-docs에서 확인할 수 있습니다. 여기에는 모든 엔드포인트와 요청 및 응답 형식에 대한 자세한 정보가 포함되어 있습니다.
+Swagger를 사용한 API 문서는 http://localhost:3000/api-docs 에서 확인할 수 있습니다. 여기에는 모든 엔드포인트와 요청 및 응답 형식에 대한 자세한 정보가 포함되어 있습니다.
