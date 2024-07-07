@@ -7,6 +7,7 @@
 - [API SWAGGER](http://43.201.51.91:3000/api-docs)
 ## ERD
 <img width="380" alt="스크린샷 2024-07-03 오후 9 04 14" src="https://github.com/KAPUIST/Nest_Ticket_Project/assets/91464689/f0aa04e0-b8d6-4944-9f81-060b4b523b84">
+
 ## 주요 기능
 
 - 사용자 회원가입 및 로그인 (JWT 인증)
